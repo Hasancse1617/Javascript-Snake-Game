@@ -4,7 +4,14 @@ body{
     font-family: 'Silkscreen', cursive;
     position: relative;
 }
-.game_upper_content ul li {
+.game_score_board{
+    margin-top: 30px;
+    height: 50px;
+}
+.game_score_board ul{
+    display: none;
+}
+.game_score_board ul li {
     list-style: none;
     display: inline-block;
     font-size: 30px;
@@ -19,12 +26,14 @@ body{
     width: 600px;
     height: 400px;
 }
-.game_over_content{display: none;}
+.game_over_content,.game_counter_content{
+    display: none;
+}
 .game_over_content h1{
     font-size: 90px;
 }
 .game_counter_content h1{
-    font-size: 90px;
+    font-size: 140px;
 }
 .game_start_content ul li{
     list-style: none;
@@ -53,4 +62,7 @@ canvas{
     /* margin-top: 50px; */
     border: 15px solid black;
     border-radius: 5px;
+    height: 425px;
+    width: 625px;
+    background-color: #9bba5a;
 }

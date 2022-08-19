@@ -1,3 +1,22 @@
+//Choose game level area
+let game_level_area = document.getElementsByClassName("game_start_content");
+let select_levels = document.getElementsByClassName("select_level");
+let game_type;
+
+//counter area 3 2 1 Ready
+let counter = document.getElementById("counter");
+let counterContent = 4;
+let counterInterval;
+let counterArea = document.getElementsByClassName("game_counter_content");
+
+//score board
+let score_board = document.getElementById("score_board");
+let score_id = document.getElementById("score_id");
+let score_board_game_type = document.getElementById("score_board_game_type");
+let high_score = document.getElementById("high_score");
+let score = 0;
+
+//board element
 let blockSize = 25;
 let rows = 17;
 let cols = 25;
@@ -7,6 +26,7 @@ let context;
 //initialize velocity variable
 let velocityX = 0;
 let velocityY = 0;
+let speed = 100;
 
 //initialize snake position
 let snakeX = blockSize * 5;
@@ -20,17 +40,63 @@ let snakeBody = [];
 let timeInterval;
 
 
+//Game select level area function
+for (var i = 0; i < select_levels.length; i++) {
+    select_levels[i].addEventListener('click', game_level, false);
+}
+function game_level(){
+    game_type = this.innerHTML;
+    if(game_type == "Easy"){
+        speed = 300;
+    }
+    else if(game_type == "Medium"){
+        speed = 200;
+    }
+    else if(game_type == "Hard"){
+        speed = 100;
+    }
+    
+    // hide game level area
+    game_level_area[0].style.display = "none";
+    //show counter area
+    counterArea[0].style.display = "block";
+    counterStart();//enable first time
+    counterInterval = setInterval(counterStart, 1000); //anable after 1sec
+}
+
+//Counter area function
+function counterStart(){
+    counter.innerHTML = --counterContent;
+    if(counterContent == 0){
+        counter.innerHTML = "Go!";
+    }
+    else if(counterContent < 0){
+        clearInterval(counterInterval);
+        counterArea[0].style.display = "none";
+        //Initialize game for start
+        initial();
+        //show score board
+        score_board.style.display = "block";
+        update_score_board(score);
+    }
+}
+//Update score board
+function update_score_board(score_game){
+    console.log('Hasan',score_game);
+}
+
 function initial(){
     board = document.getElementById("board");
     board.width = cols * blockSize;
     board.height = rows * blockSize;
     context = board.getContext("2d");
     placeFoodRandom();
-    timeInterval = setInterval(drawGame, 300);
+    // console.log('speed',speed)
+    timeInterval = setInterval(drawGame, speed);
     document.addEventListener("keyup", changeDirection);
 }
 function changeDirection(e){
-    // console.log(e);
+    console.log('speed',speed)
     if(e.code == "ArrowUp"){
         velocityX = 0;
         velocityY = -1;
@@ -86,20 +152,9 @@ function drawGame(){
         clearInterval(timeInterval);
     }
 }
-initial();
+
 function placeFoodRandom(){
     foodX = Math.floor(Math.random() * cols) * blockSize;
     foodY = Math.floor(Math.random() * rows) * blockSize;
 }
 
-//counter area 3 2 1 Ready
-let counter = document.getElementById("counter");
-let h = 4;
-let counterInterval = setInterval(counterStart, 1000);
-function counterStart(){
-    counter.innerHTML = --h;
-    if(h < 1){
-        counter.innerHTML = "Go!";
-        clearInterval(counterInterval);
-    }
-}

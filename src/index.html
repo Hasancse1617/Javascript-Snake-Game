@@ -11,20 +11,20 @@
     <link rel="stylesheet" href="/assets/main.css">
 </head>
 <body>
-    <div class="game_upper_content">
-        <ul>
-            <li>Score: 50</li>
-            <li>Type: Easy</li>
-            <li>High: 50</li>
+    <div class="game_score_board">
+        <ul id="score_board">
+            <li>Score: <span id="score_id">0</span></li>
+            <li>Type: <span id="score_board_game_type">Easy</span></li>
+            <li>High: <span id="high_score">0</span></li>
         </ul>
     </div>
     <div class="game_start_content">
         <h1>Snake</h1>
         <h3>Choose Level</h3>
         <ul>
-            <li>Easy</li>
-            <li>Medium</li>
-            <li>Hard</li>
+            <li class="select_level">Easy</li>
+            <li class="select_level">Medium</li>
+            <li class="select_level">Hard</li>
         </ul>
     </div>
     <div class="game_counter_content">
