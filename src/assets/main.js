@@ -1,11 +1,11 @@
 let blockSize = 25;
-let rows = 20;
-let cols = 20;
+let rows = 17;
+let cols = 25;
 let board;
 let context;
 
 //initialize velocity variable
-let velocityX = 1;
+let velocityX = 0;
 let velocityY = 0;
 
 //initialize snake position
@@ -17,6 +17,8 @@ let foodX;
 let foodY;
 
 let snakeBody = [];
+let timeInterval;
+
 
 function initial(){
     board = document.getElementById("board");
@@ -24,12 +26,12 @@ function initial(){
     board.height = rows * blockSize;
     context = board.getContext("2d");
     placeFoodRandom();
-    setInterval(draw, 500);
+    timeInterval = setInterval(drawGame, 300);
     document.addEventListener("keyup", changeDirection);
 }
 function changeDirection(e){
     // console.log(e);
-    if(e.code == "ArrowUp" && velocityY != 1){
+    if(e.code == "ArrowUp"){
         velocityX = 0;
         velocityY = -1;
     }
@@ -47,10 +49,10 @@ function changeDirection(e){
     }
 }
 
-function draw(){
+function drawGame(){
     // console.log("draw")
     //draw full board
-    context.fillStyle = "black";
+    context.fillStyle = "#9bba5a";
     context.fillRect(0, 0, board.width, board.height);
 
     //draw random food
@@ -61,25 +63,43 @@ function draw(){
     if(snakeX == foodX && snakeY == foodY){
         snakeBody.push([foodX, foodY]);
         placeFoodRandom();
+        // console.log(snakeBody);
     }
-    
+    //move snake body
+    for(let i = snakeBody.length-1; i > 0; i--){
+        snakeBody[i] = snakeBody[i-1];
+    }
+    if(snakeBody.length){
+        snakeBody[0] = [snakeX, snakeY];
+    }
     //draw snake
-    context.fillStyle = "lime";
+    context.fillStyle = "black";
     snakeX += velocityX * blockSize;
     snakeY += velocityY * blockSize; 
     context.fillRect(snakeX, snakeY, blockSize, blockSize);
-    for(i = 0; i < snakeBody.length; i++){
+    for(let i = 0; i < snakeBody.length; i++){
         context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
     }
-    //move snake body
-    for(i = 0; i < snakeBody.length; i++){
-        snakeBody[i][0]+=10;
-        snakeBody[i][1]+=10;
-        // console.log(x,y);
+    //game over
+    if(snakeX < 0 || snakeX > cols*blockSize-1 || snakeY < 0 || snakeY > rows*blockSize-1){
+        // alert("Game over");
+        clearInterval(timeInterval);
     }
 }
 initial();
 function placeFoodRandom(){
     foodX = Math.floor(Math.random() * cols) * blockSize;
     foodY = Math.floor(Math.random() * rows) * blockSize;
+}
+
+//counter area 3 2 1 Ready
+let counter = document.getElementById("counter");
+let h = 4;
+let counterInterval = setInterval(counterStart, 1000);
+function counterStart(){
+    counter.innerHTML = --h;
+    if(h < 1){
+        counter.innerHTML = "Go!";
+        clearInterval(counterInterval);
+    }
 }

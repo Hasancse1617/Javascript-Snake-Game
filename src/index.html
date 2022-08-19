@@ -5,11 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/main.css">
 </head>
 <body>
-    <h1>Snake</h1>
-    <canvas id="board"></canvas>
+    <div class="game_upper_content">
+        <ul>
+            <li>Score: 50</li>
+            <li>Type: Easy</li>
+            <li>High: 50</li>
+        </ul>
+    </div>
+    <div class="game_start_content">
+        <h1>Snake</h1>
+        <h3>Choose Level</h3>
+        <ul>
+            <li>Easy</li>
+            <li>Medium</li>
+            <li>Hard</li>
+        </ul>
+    </div>
+    <div class="game_counter_content">
+        <h1 id="counter"></h1>
+    </div>
+    <div class="game_over_content">
+        <h1>Game<br>Over!</h1>
+    </div>
+    <canvas id="board">
+    </canvas>
     <script src="/assets/main.js"></script>
 </body>
 </html>
