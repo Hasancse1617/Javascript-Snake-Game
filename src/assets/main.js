@@ -1,3 +1,4 @@
+
 //Choose game level area
 let game_level_area = document.getElementsByClassName("game_start_content");
 let select_levels = document.getElementsByClassName("select_level");
@@ -13,8 +14,12 @@ let counterArea = document.getElementsByClassName("game_counter_content");
 let score_board = document.getElementById("score_board");
 let score_id = document.getElementById("score_id");
 let score_board_game_type = document.getElementById("score_board_game_type");
-let high_score = document.getElementById("high_score");
+let high_score_board = document.getElementById("high_score");
 let score = 0;
+let high_score = 0;
+
+//game over
+let game_over = document.getElementById("game_over");
 
 //board element
 let blockSize = 25;
@@ -24,7 +29,7 @@ let board;
 let context;
 
 //initialize velocity variable
-let velocityX = 0;
+let velocityX = 1;
 let velocityY = 0;
 let speed = 100;
 
@@ -45,6 +50,7 @@ for (var i = 0; i < select_levels.length; i++) {
     select_levels[i].addEventListener('click', game_level, false);
 }
 function game_level(){
+    console.log("Hasan")
     game_type = this.innerHTML;
     if(game_type == "Easy"){
         speed = 300;
@@ -66,6 +72,7 @@ function game_level(){
 
 //Counter area function
 function counterStart(){
+    console.log("counter")
     counter.innerHTML = --counterContent;
     if(counterContent == 0){
         counter.innerHTML = "Go!";
@@ -77,12 +84,30 @@ function counterStart(){
         initial();
         //show score board
         score_board.style.display = "block";
+        //show score board game type
+        score_board_game_type.innerHTML = game_type;
+        
+        //show high score
+        if(game_type == "Easy"){ high_score = localStorage.getItem("easy_high_score")||0; }
+        else if(game_type == "Medium"){ high_score = localStorage.getItem("medium_high_score")||0; }
+        else if(game_type == "Hard"){ high_score = localStorage.getItem("hard_high_score")||0; }
+        
+        high_score_board.innerHTML = high_score;
+
         update_score_board(score);
     }
 }
 //Update score board
 function update_score_board(score_game){
-    console.log('Hasan',score_game);
+    score_id.innerHTML = score_game;
+    if(score_game > high_score){
+
+        high_score_board.innerHTML = score_game;
+        //save easy, medium, hard high score
+        if(game_type == "Easy"){localStorage.setItem("easy_high_score", score_game)}
+        else if(game_type == "Medium"){localStorage.setItem("medium_high_score", score_game)}
+        else if(game_type == "Hard"){localStorage.setItem("hard_high_score", score_game)}
+    }
 }
 
 function initial(){
@@ -93,10 +118,10 @@ function initial(){
     placeFoodRandom();
     // console.log('speed',speed)
     timeInterval = setInterval(drawGame, speed);
-    document.addEventListener("keyup", changeDirection);
+    document.addEventListener("keydown", changeDirection);
 }
 function changeDirection(e){
-    console.log('speed',speed)
+    // console.log('speed',speed)
     if(e.code == "ArrowUp"){
         velocityX = 0;
         velocityY = -1;
@@ -128,6 +153,17 @@ function drawGame(){
     //Increase snake body
     if(snakeX == foodX && snakeY == foodY){
         snakeBody.push([foodX, foodY]);
+        //increase score
+        if(game_type == "Easy"){
+            score += 5;
+        }
+        else if(game_type == "Medium"){
+            score += 10;
+        }
+        else if(game_type == "Hard"){
+            score += 15;
+        }
+        update_score_board(score);//Update score board
         placeFoodRandom();
         // console.log(snakeBody);
     }
@@ -150,11 +186,39 @@ function drawGame(){
     if(snakeX < 0 || snakeX > cols*blockSize-1 || snakeY < 0 || snakeY > rows*blockSize-1){
         // alert("Game over");
         clearInterval(timeInterval);
+        gameOver();
+    }
+    for(let i=0; i<snakeBody.length; i++){
+        if(snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]){
+            clearInterval(timeInterval);
+            gameOver();
+        }
     }
 }
 
 function placeFoodRandom(){
     foodX = Math.floor(Math.random() * cols) * blockSize;
     foodY = Math.floor(Math.random() * rows) * blockSize;
+}
+
+function gameOver(){
+    //check igh score or not
+    if(score > high_score){
+        document.getElementById("game_over_con").innerHTML = "High <br> Score";
+    }
+    game_over.style.display = "block";
+    game_over.addEventListener("click", function(){
+        game_over.style.display = "none";
+        game_level_area[0].style.display = "block";
+
+        //initialize after game over
+        counterContent = 4;
+        snakeX = blockSize * 5;
+        snakeY = blockSize * 5;
+        snakeBody = [];
+        velocityX = 1;
+        velocityY = 0;
+        score = 0;
+    });
 }
 
