@@ -20,15 +20,13 @@ let high_score = 0;
 
 //Music area
 let music_sound = true;
-let game_music = new Audio("/assets/audios/music.wav");
 let tik_tik_audio = new Audio("/assets/audios/tik.mp3");
 let snake_eat_audio = new Audio("/assets/audios/snake_hiss.mp3");
 let game_over_audio = new Audio("/assets/audios/game_over.wav");
-setTimeout(function(){
-    // game_music.muted = true;
-    counter.click();
-    game_music.autoplay;
-},1000);
+let game_music_area = document.getElementById("game_music_area");
+let music_open = document.getElementById("music_open");
+let music_close = document.getElementById("music_close");
+
 
 //game over
 let game_over = document.getElementById("game_over");
@@ -54,12 +52,27 @@ let foodX;
 let foodY;
 
 let snakeBody = [];
+let bigSnakeCreate = true;
 let timeInterval;
+console.log(snakeX,snakeY);
 
+//control game Sound function
+game_music_area.addEventListener("click", control_music);
+function control_music(){
+    if(music_sound){
+        music_sound = false;
+        music_open.style.display = "none";
+        music_close.style.display = "block";
+    }else{
+        music_sound = true;
+        music_close.style.display = "none";
+        music_open.style.display = "block";
+    }
+}
 
 //Game select level area function
 for (var i = 0; i < select_levels.length; i++) {
-    select_levels[i].addEventListener('click', game_level, false);
+    select_levels[i].addEventListener('click', game_level, false, true);
 }
 function game_level(){
     console.log("Hasan")
@@ -163,8 +176,13 @@ function drawGame(){
 
     //draw random food
     context.fillStyle = "red";
-    context.fillRect(foodX, foodY, blockSize, blockSize);
-
+    roundRect(context, foodX, foodY, blockSize, blockSize, 8);
+    //create big snake
+    if(bigSnakeCreate){
+        snakeBody.push([snakeX-25, snakeY]);
+        snakeBody.push([snakeX-50, snakeY]);
+        bigSnakeCreate = false;
+    }
     //Increase snake body
     if(snakeX == foodX && snakeY == foodY){
         snakeBody.push([foodX, foodY]);
@@ -190,13 +208,15 @@ function drawGame(){
     if(snakeBody.length){
         snakeBody[0] = [snakeX, snakeY];
     }
+    // snakeBody.push([snakeX + 25,snakeY]);
+    // snakeBody.push([snakeX + 50,snakeY]);
     //draw snake
     context.fillStyle = "black";
     snakeX += velocityX * blockSize;
-    snakeY += velocityY * blockSize; 
-    context.fillRect(snakeX, snakeY, blockSize, blockSize);
+    snakeY += velocityY * blockSize;
+    roundRect(context, snakeX, snakeY, blockSize, blockSize, 8); 
     for(let i = 0; i < snakeBody.length; i++){
-        context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
+        roundRect(context, snakeBody[i][0], snakeBody[i][1], blockSize, blockSize, 8); 
     }
     //game over
     if(snakeX < 0 || snakeX > cols*blockSize-1 || snakeY < 0 || snakeY > rows*blockSize-1){
@@ -242,3 +262,30 @@ function gameOver(){
     });
 }
 
+///Round shape rectangle
+function roundRect(
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    radius = 5,
+  ) {
+    if (typeof radius === 'number') {
+      radius = {tl: radius, tr: radius, br: radius, bl: radius};
+    } else {
+      radius = {...{tl: 0, tr: 0, br: 0, bl: 0}, ...radius};
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+    ctx.closePath();
+    ctx.fill();
+  }
