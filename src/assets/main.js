@@ -18,6 +18,18 @@ let high_score_board = document.getElementById("high_score");
 let score = 0;
 let high_score = 0;
 
+//Music area
+let music_sound = true;
+let game_music = new Audio("/assets/audios/music.wav");
+let tik_tik_audio = new Audio("/assets/audios/tik.mp3");
+let snake_eat_audio = new Audio("/assets/audios/snake_hiss.mp3");
+let game_over_audio = new Audio("/assets/audios/game_over.wav");
+setTimeout(function(){
+    // game_music.muted = true;
+    counter.click();
+    game_music.autoplay;
+},1000);
+
 //game over
 let game_over = document.getElementById("game_over");
 
@@ -72,8 +84,11 @@ function game_level(){
 
 //Counter area function
 function counterStart(){
-    console.log("counter")
+    // console.log("counter")
     counter.innerHTML = --counterContent;
+
+    if(music_sound && counterContent >= 0){ tik_tik_audio.play(); }//counter audio
+    
     if(counterContent == 0){
         counter.innerHTML = "Go!";
     }
@@ -153,6 +168,7 @@ function drawGame(){
     //Increase snake body
     if(snakeX == foodX && snakeY == foodY){
         snakeBody.push([foodX, foodY]);
+        if(music_sound){snake_eat_audio.play()}//eat audio effect
         //increase score
         if(game_type == "Easy"){
             score += 5;
@@ -202,7 +218,11 @@ function placeFoodRandom(){
 }
 
 function gameOver(){
-    //check igh score or not
+    //game over audio
+    if(music_sound){
+        game_over_audio.play();
+    }
+    //check high score or not
     if(score > high_score){
         document.getElementById("game_over_con").innerHTML = "High <br> Score";
     }
@@ -211,7 +231,7 @@ function gameOver(){
         game_over.style.display = "none";
         game_level_area[0].style.display = "block";
 
-        //initialize after game over
+        //initialize after game over to restart
         counterContent = 4;
         snakeX = blockSize * 5;
         snakeY = blockSize * 5;

@@ -70,3 +70,16 @@ canvas{
     width: 625px;
     background-color: #9bba5a;
 }
+
+/* Game music area */
+.game_music_area{
+    position: absolute;
+    right: 50px;
+    top: 0;
+}
+.game_music_area i{
+    cursor: pointer;
+}
+#music_close{
+    display: none;
+}
